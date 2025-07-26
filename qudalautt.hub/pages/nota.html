@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Nota Transaksi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background: #f5f5f5;
+      padding: 30px;
+    }
+
+    .nota {
+      max-width: 320px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border: 1px dashed #444;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .nota h3 {
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    .nota p {
+      margin: 4px 0;
+      font-size: 14px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+      padding: 10px;
+      background: #2c7a7b;
+      color: white;
+      text-align: center;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+
+    .btn:hover {
+      background: #225e5f;
+    }
+
+    @media print {
+      .btn {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="nota" id="notaBox">
+  <h3>NOTA TRANSAKSI</h3>
+  <p>ID: <span id="id">-</span></p>
+  <p>Tanggal: <span id="tanggal">-</span></p>
+  <p>Produk: <span id="produk">-</span></p>
+  <p>Jenis: <span id="jenis">-</span></p>
+  <p>Durasi: <span id="durasi">-</span></p>
+  <p>Harga: <span id="harga">-</span></p>
+  <p>Pembayaran: <span id="pembayaran">-</span></p>
+  <p>Status: <span id="status">-</span></p>
+  <p>Catatan: <span id="catatan">-</span></p>
+</div>
+
+<button class="btn" onclick="window.print()">🖨️ Cetak Nota</button>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js'
+
+  const supabase = createClient(
+    'https://uagbiwhyapkrxkyyjeza.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ey...'
+  );
+
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+
+  if (!id) {
+    alert('ID transaksi tidak ditemukan!');
+    location.href = 'daftar_transaksi.html';
+  }
+
+  const { data, error } = await supabase.from('transaksi').select('*').eq('id', id).single();
+
+  if (error || !data) {
+    alert('❌ Data tidak ditemukan');
+    location.href = 'daftar_transaksi.html';
+  }
+
+  document.getElementById('id').textContent = data.id;
+  document.getElementById('tanggal').textContent = data.tanggal;
+  document.getElementById('produk').textContent = data.produk;
+  document.getElementById('jenis').textContent = data.jenis;
+  document.getElementById('durasi').textContent = data.durasi;
+  document.getElementById('harga').textContent = `Rp ${Number(data.harga).toLocaleString('id-ID')}`;
+  document.getElementById('pembayaran').textContent = data.pembayaran;
+  document.getElementById('status').textContent = data.status;
+  document.getElementById('catatan').textContent = data.catatan;
+</script>
+
+</body>
+</html>

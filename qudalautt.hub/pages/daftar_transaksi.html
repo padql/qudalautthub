@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Daftar Transaksi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f8f9fa;
+      padding: 30px 15px;
+      margin: 0;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      position: relative;
+    }
+    h2 {
+      text-align: center;
+      color: #2c7a7b;
+      margin-bottom: 20px;
+    }
+    .alert {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: auto;
+      min-width: 300px;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: bold;
+      z-index: 1000;
+      display: none;
+      animation: slideDown 0.5s ease forwards;
+    }
+    .alert.success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .alert.error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    @keyframes slideDown {
+      from { transform: translate(-50%, -20px); opacity: 0; }
+      to { transform: translate(-50%, 0); opacity: 1; }
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #2c7a7b;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      padding: 10px 16px;
+      margin-top: 20px;
+      margin-right: 10px;
+      border-radius: 8px;
+      background: #2c7a7b;
+      color: white;
+      transition: background 0.3s ease;
+    }
+    .btn:hover {
+      background: #225e5f;
+    }
+    .hapus-btn {
+      color: red;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tr {
+    margin-bottom: 15px;
+    border-bottom: 2px solid #eee;
+    padding: 10px 0;
+  }
+
+  td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+
+  td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 10px;
+    top: 12px;
+    font-weight: bold;
+    color: #444;
+    white-space: nowrap;
+  }
+}
+
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+  <div class="container">
+    <h2>Daftar Transaksi</h2>
+    <div id="alertBox" class="alert"></div>
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Tanggal</th>
+          <th>Produk</th>
+          <th>Jenis</th>
+          <th>Durasi</th>
+          <th>Harga</th>
+          <th>Pembayaran</th>
+          <th>Status</th>
+          <th>Catatan</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="transaksiBody">
+        <tr><td colspan="10">Loading...</td></tr>
+      </tbody>
+    </table>
+
+    <div class="btn-container">
+        <a href="form.html" class="btn">Tambah Transaksi</a>
+        <button class="btn" onclick="exportXLS()">Ekspor Data</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js'
+
+    const supabase = createClient(
+      'https://uagbiwhyapkrxkyyjeza.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhZ2Jpd2h5YXBrcnhreXlqZXphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDUyNjcsImV4cCI6MjA2OTAyMTI2N30.k6dR0RL0yfElQC5wWKC2ab5npBSiLwaCecxq6j2fdWE'
+    )
+
+    const tbody = document.getElementById('transaksiBody')
+    const alertBox = document.getElementById('alertBox')
+
+    function showAlert(message, type = 'success') {
+      alertBox.className = 'alert ' + type
+      alertBox.textContent = message
+      alertBox.style.display = 'block'
+      setTimeout(() => {
+        alertBox.style.display = 'none'
+      }, 2000)
+    }
+
+    async function loadData() {
+      const { data, error } = await supabase.from('transaksi').select('*').order('id', { ascending: true })
+      if (error) {
+        tbody.innerHTML = `<tr><td colspan="10" style="color:red;">❌ Gagal mengambil data</td></tr>`
+        return
+      }
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;">Belum ada transaksi.</td></tr>`
+        return
+      }
+
+      tbody.innerHTML = ''
+      data.forEach((row, i) => {
+        const tr = document.createElement('tr')
+        tr.setAttribute('data-id', row.id)
+       tr.innerHTML = `
+        <td data-label="No">${i + 1}</td>
+        <td data-label="Tanggal">${row.tanggal}</td>
+        <td data-label="Produk">${row.produk}</td>
+        <td data-label="Jenis">${row.jenis}</td>
+        <td data-label="Durasi">${row.durasi}</td>
+        <td data-label="Harga">Rp ${parseInt(row.harga).toLocaleString('id-ID')}</td>
+        <td data-label="Pembayaran">${row.pembayaran}</td>
+        <td data-label="Status">${row.status}</td>
+        <td data-label="Catatan">${row.catatan || ''}</td>
+        <td data-label="Aksi"><span class="hapus-btn" onclick="hapusTransaksi(${row.id}, this)">🗑</span></td>
+      `
+        tbody.appendChild(tr)
+      })
+    }
+
+    window.hapusTransaksi = async (id, el) => {
+      const result = await Swal.fire({
+        title: 'Yakin?',
+        text: 'Transaksi akan dihapus!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#2c7a7b',
+        cancelButtonColor: '#aaa',
+        confirmButtonText: 'Ya, hapus!'
+      })
+
+      if (result.isConfirmed) {
+        const { error } = await supabase.from('transaksi').delete().eq('id', id)
+        if (error) {
+          showAlert('❌ Gagal menghapus data: ' + error.message, 'error')
+        } else {
+          const row = el.closest('tr')
+          row.remove()
+          showAlert('✅ Transaksi berhasil dihapus!', 'success')
+        }
+      }
+    }
+
+    window.exportXLS = async () => {
+      const { data, error } = await supabase.from('transaksi').select('*')
+      if (error || !data) {
+        showAlert('❌ Gagal mengambil data!', 'error')
+        return
+      }
+
+      const headers = ['Tanggal','Produk','Jenis','Durasi','Harga','Pembayaran','Status','Catatan']
+      const rows = data.map(row => [
+        row.tanggal,
+        row.produk,
+        row.jenis,
+        row.durasi,
+        row.harga,
+        row.pembayaran,
+        row.status,
+        row.catatan || ''
+      ])
+      const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows])
+
+      const range = XLSX.utils.decode_range(worksheet['!ref'])
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const address = XLSX.utils.encode_cell({ r: 0, c: C })
+        if (!worksheet[address]) continue
+        worksheet[address].s = {
+          font: { bold: true, color: { rgb: "FFFFFF" } },
+          fill: { fgColor: { rgb: "2c7a7b" } },
+          alignment: { horizontal: "center" }
+        }
+      }
+
+      worksheet['!cols'] = headers.map(() => ({ wch: 20 }))
+
+      const workbook = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Transaksi")
+
+      XLSX.writeFile(workbook, "daftar_transaksi.xlsx")
+    }
+
+    loadData()
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</body>
+</html>

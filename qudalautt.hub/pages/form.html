@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Form Transaksi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      padding: 30px 15px;
+      margin: 0;
+    }
+
+    .form-container {
+      max-width: 380px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c7a7b;
+      margin-bottom: 20px;
+    }
+
+    form input,
+    form select,
+    form textarea,
+    form button {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    form button {
+      background-color: #2c7a7b;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    form button:hover {
+      background-color: #225e5f;
+    }
+
+    .btn-container {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      background: #2c7a7b;
+      color: white;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #225e5f;
+    }
+
+    #notaBox {
+      position: relative;
+      background: white;
+      max-width: 320px;
+      padding: 20px;
+      border: 1px dashed #444;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin: auto;
+      font-family: 'Courier New', monospace;
+      overflow: hidden;
+    }
+
+    #notaBox::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('image/ql.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: 1;
+      z-index: 0;
+    }
+
+    #notaBox * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .toast {
+      position: fixed;
+      top: 5%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: none;
+      opacity: 0;
+      animation-duration: 0.5s;
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes slideInDown {
+      0% {
+        transform: translate(-50%, -100%);
+        opacity: 0;
+      }
+      100% {
+        transform: translate(-50%, 0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <div id="notif" class="toast"></div>
+    <h2>Form Transaksi</h2>
+    <form id="transaksiForm">
+      <div class="row">
+        <div class="col-12 col-md-6 mb-3">
+          <label class="form-label">Tanggal</label>
+          <input type="date" class="form-control" name="tanggal" required>
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+          <label class="form-label">Produk</label>
+          <select class="form-select" name="produk" required>
+            <option>Vidio</option>
+            <option>Spotify</option>
+            <option>Youtube</option>
+            <option>Netflix</option>
+            <option>Bstation</option>
+            <option>IQIYI</option>
+            <option>Canva</option>
+            <option>Capcut</option>
+            <option>Alight Motion</option>
+            <option>ChatGPT</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+          <label class="form-label">Jenis Akun</label>
+          <select class="form-select" name="jenis" required>
+            <option>Private</option>
+            <option>Sharing</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+          <label class="form-label">Durasi</label>
+          <input type="text" class="form-control" name="durasi" required>
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+          <label class="form-label">Harga</label>
+          <input type="number" class="form-control" name="harga" required>
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+          <label class="form-label">Metode Pembayaran</label>
+          <select class="form-select" name="pembayaran" required>
+            <option>DANA</option>
+            <option>QRIS</option>
+            <option>GoPay</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+          <label class="form-label">Status</label>
+          <input type="text" class="form-control" name="status" value="Pembayaran Selesai" required>
+        </div>
+        <div class="col-12 mb-4">
+          <label class="form-label">Catatan (Opsional)</label>
+          <textarea class="form-control" name="catatan" rows="3" placeholder="Tulis catatan jika ada..."></textarea>
+        </div>
+        <div class="col-12">
+        <div class="row g-2">
+        <div class="col-12 col-md-4 d-grid">
+          <button type="submit">Simpan Transaksi</button>
+          <button type="button"><a href="daftar_transaksi.html" class="btn">Daftar Transaksi</a></button>
+          <div id="previewNota" style="display:none; margin-top:30px;"></div>
+          <button id="btnDownload" style="display:none" class="btn">⬇️ Download Nota (JPG)</button>
+        </div>
+  </div>
+</div>
+
+      </div>
+    </form>
+    <p id="status"></p>
+  </div>
+
+  <script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js'
+import html2canvas from 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/+esm'
+
+const supabase = createClient(
+  'https://uagbiwhyapkrxkyyjeza.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhZ2Jpd2h5YXBrcnhreXlqZXphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDUyNjcsImV4cCI6MjA2OTAyMTI2N30.k6dR0RL0yfElQC5wWKC2ab5npBSiLwaCecxq6j2fdWE'
+)
+
+const form = document.getElementById('transaksiForm')
+const status = document.getElementById('status')
+const previewBox = document.getElementById('previewNota')
+const downloadBtn = document.getElementById('btnDownload')
+
+form.addEventListener('submit', async (e) => {
+  function showNotif(message, type = 'success') {
+  const notif = document.getElementById('notif')
+  notif.textContent = message
+
+  notif.style.backgroundColor = type === 'success' ? '#d4edda' : '#f8d7da'
+  notif.style.color = type === 'success' ? '#155724' : '#721c24'
+  notif.style.border = `1px solid ${type === 'success' ? '#c3e6cb' : '#f5c6cb'}`
+  notif.style.display = 'block'
+
+  // Reset animasi biar bisa dipanggil berulang
+  notif.style.animation = 'none'
+  void notif.offsetHeight // force reflow
+  notif.style.animation = 'slideInDown 0.5s ease forwards'
+
+  // Setelah 3 detik, keluar pakai fade
+  setTimeout(() => {
+    notif.style.animation = 'fadeOut 0.5s ease forwards'
+    setTimeout(() => {
+      notif.style.display = 'none'
+    }, 500)
+  }, 3000)
+}
+
+  e.preventDefault()
+  const formData = new FormData(form)
+  const data = Object.fromEntries(formData.entries())
+
+  const { data: inserted, error } = await supabase.from('transaksi').insert([data]).select().single()
+
+  if (error) {
+  showNotif('❌ Gagal menyimpan transaksi: ' + error.message, 'error')
+  return
+  }
+
+  showNotif('✅ Transaksi berhasil disimpan!', 'success')
+
+  form.reset()
+
+  // ✅ Tampilkan nota
+  const notaHtml = `
+    <div id="notaBox" style="
+      position: relative;
+      font-family:'Courier New', monospace;
+      background:white;
+      max-width:320px;
+      border:1px dashed #444;
+      padding:20px;
+      margin:auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+    ">
+    <div style="
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url('../images/ql.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.05;
+      z-index: 0;
+    "></div>
+      <h3 style="text-align:center;">Qudalautt.Hub</h3>
+      <p style="text-align:center;"><strong>Layanan Aplikasi Premium</strong></p>
+      <hr />
+      <p style="border-bottom: 1px dashed #000"><strong>ID:</strong> ${inserted.id}</p>
+      <p style="border-bottom: 1px dashed #000"><strong>Tanggal:</strong> ${inserted.tanggal}</p>
+      <p style="border-bottom: 1px dashed #000"><strong>Aplikasi:</strong> ${inserted.produk}</p>
+      <p style="border-bottom: 1px dashed #000"><strong>Akun:</strong> ${inserted.jenis}</p>
+      <p style="border-bottom: 1px dashed #000"><strong>Durasi:</strong> ${inserted.durasi}</p>
+      <p style="border-bottom: 1px dashed #000"><strong>Harga:</strong> Rp ${Number(inserted.harga).toLocaleString('id-ID')}</p>
+      <p style="border-bottom: 1px dashed #000"><strong>Pembayaran:</strong> ${inserted.pembayaran}</p>
+      <p style="border-bottom: 1px dashed #000"><strong>Status:</strong> ${inserted.status}</p>
+      <p><strong>Catatan:</strong> ${inserted.catatan || '-'}</p>
+      <hr />
+      <p style="text-align:center;"><strong>Terima kasih atas kepercayaannya!</strong></p>
+    </div>
+  `
+  previewBox.innerHTML = notaHtml
+  previewBox.style.display = 'block'
+  downloadBtn.style.display = 'block'
+
+  // ✅ Tombol download
+  downloadBtn.onclick = async () => {
+    const nota = document.getElementById('notaBox')
+    const canvas = await html2canvas(nota)
+    const link = document.createElement('a')
+    link.download = `nota-${inserted.id}.jpg`
+    link.href = canvas.toDataURL('image/jpeg')
+    link.click()
+  }
+})
+
+</script>
+
+</body>
+</html>
