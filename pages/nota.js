@@ -7,13 +7,13 @@ export function getUcapanRandom() {
       "Transaksinya aman. Selamat mulai hari dengan versi terbaik.",
       "Langkah awal yang oke banget. Silakan nikmati fitur premiumnya.",
       "Terima kasih. Akses kamu udah aktif, silahkan pakai.",
-      "Checkout pagi ini berhasil. Semoga bermanfaat ya."
+      "Checkout pagi ini berhasil. Selamat bersenang-senang."
     ],
     siang: [
-      "Makasih udah order di jam segini. Semua udah ready.",
+      "Makasih udah order di jam segini. Ditunggu orderan selanjutnya!",
       "Pembayaran sukses. Fitur premiumnya langsung bisa dipakai.",
       "Aplikasi udah aktif. Terima kasih atas kepercayaannya. Rimsfek!",
-      "Pilihan kamu udah bener. Tinggal nikmati fiturnya.",
+      "Pilihan kamu udah bener. Tinggal nikmatin fiturnya.",
       "Makasih! Akses penuh udah dibuka buat kamu."
     ],
     sore: [
@@ -24,9 +24,9 @@ export function getUcapanRandom() {
       "Semoga upgrade ini bisa kasih pengalaman yang lebih maksimal."
     ],
     malam: [
-      "Makasih udah belanja malam-malam gini. Aplikasinya udah aktif ya.",
+      "Makasih udah belanja malem-malem gini. Aplikasinya udah aktif ya.",
       "Pembayarannya aman. Tinggal pakai aplikasinya sekarang.",
-      "Akses premium kamu udah nyala. Selamat pake!",
+      "Akses premium kamu udah aktif. Selamat meenikmati!",
       "Terima kasih. Kalau ada yang kurang jelas, feel free buat tanya.",
       "Upgrade udah kelar. Selamat pakai versi lengkapnya."
     ],
