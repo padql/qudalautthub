@@ -31,6 +31,46 @@
         background-color: #03637d;
       }
     </style>
+    <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(reg => {
+          console.log('✅ Service Worker terdaftar!', reg);
+
+          // Cek update
+          reg.addEventListener('updatefound', () => {
+            const newSW = reg.installing;
+            newSW.addEventListener('statechange', () => {
+              if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+                showUpdateToast(); // Munculin toast kalau update terdeteksi
+              }
+            });
+          });
+        })
+        .catch(err => console.error('❌ SW gagal daftar:', err));
+    });
+  }
+
+  function showUpdateToast() {
+    const toast = document.getElementById('update-toast');
+    toast.style.display = 'block';
+
+    const reloadBtn = document.getElementById('reload-btn');
+    reloadBtn.addEventListener('click', () => {
+      if (navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({ action: 'skipWaiting' });
+        window.location.reload();
+      }
+    });
+  }
+
+  // Listener buat ganti SW lama ke yang baru
+  navigator.serviceWorker?.addEventListener('controllerchange', () => {
+    console.log('🔄 Controller service worker udah diganti.');
+  });
+</script>
+
   </head>
   <body>
     <div class="text-center">
