@@ -211,41 +211,43 @@
 
   <script type="module">
   import { createClient } from 'https://esm.sh/@supabase/supabase-js'
-import html2canvas from 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/+esm'
+  import html2canvas from 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/+esm'
+  import { getUcapanRandom } from '/nota.js'
 
-const supabase = createClient(
-  'https://uagbiwhyapkrxkyyjeza.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhZ2Jpd2h5YXBrcnhreXlqZXphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDUyNjcsImV4cCI6MjA2OTAyMTI2N30.k6dR0RL0yfElQC5wWKC2ab5npBSiLwaCecxq6j2fdWE'
-)
 
-const form = document.getElementById('transaksiForm')
-const status = document.getElementById('status')
-const previewBox = document.getElementById('previewNota')
-const downloadBtn = document.getElementById('btnDownload')
+  const supabase = createClient(
+    'https://uagbiwhyapkrxkyyjeza.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhZ2Jpd2h5YXBrcnhreXlqZXphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDUyNjcsImV4cCI6MjA2OTAyMTI2N30.k6dR0RL0yfElQC5wWKC2ab5npBSiLwaCecxq6j2fdWE'
+  )
 
-form.addEventListener('submit', async (e) => {
-  function showNotif(message, type = 'success') {
-  const notif = document.getElementById('notif')
-  notif.textContent = message
+  const form = document.getElementById('transaksiForm')
+  const status = document.getElementById('status')
+  const previewBox = document.getElementById('previewNota')
+  const downloadBtn = document.getElementById('btnDownload')
 
-  notif.style.backgroundColor = type === 'success' ? '#d4edda' : '#f8d7da'
-  notif.style.color = type === 'success' ? '#155724' : '#721c24'
-  notif.style.border = `1px solid ${type === 'success' ? '#c3e6cb' : '#f5c6cb'}`
-  notif.style.display = 'block'
+  form.addEventListener('submit', async (e) => {
+    function showNotif(message, type = 'success') {
+    const notif = document.getElementById('notif')
+    notif.textContent = message
 
-  // Reset animasi biar bisa dipanggil berulang
-  notif.style.animation = 'none'
-  void notif.offsetHeight // force reflow
-  notif.style.animation = 'slideInDown 0.5s ease forwards'
+    notif.style.backgroundColor = type === 'success' ? '#d4edda' : '#f8d7da'
+    notif.style.color = type === 'success' ? '#155724' : '#721c24'
+    notif.style.border = `1px solid ${type === 'success' ? '#c3e6cb' : '#f5c6cb'}`
+    notif.style.display = 'block'
 
-  // Setelah 3 detik, keluar pakai fade
-  setTimeout(() => {
-    notif.style.animation = 'fadeOut 0.5s ease forwards'
+    // Reset animasi biar bisa dipanggil berulang
+    notif.style.animation = 'none'
+    void notif.offsetHeight // force reflow
+    notif.style.animation = 'slideInDown 0.5s ease forwards'
+
+    // Setelah 3 detik, keluar pakai fade
     setTimeout(() => {
-      notif.style.display = 'none'
-    }, 500)
-  }, 3000)
-}
+      notif.style.animation = 'fadeOut 0.5s ease forwards'
+      setTimeout(() => {
+        notif.style.display = 'none'
+      }, 500)
+    }, 3000)
+  }
 
   e.preventDefault()
   const formData = new FormData(form)
@@ -265,6 +267,7 @@ form.addEventListener('submit', async (e) => {
   // ✅ Tampilkan nota
   const notaHtml = `
     <div id="notaBox" style="
+      aspect-ratio: 3 / 19;
       position: relative;
       font-family:'Courier New', monospace;
       background:white;
@@ -297,7 +300,7 @@ form.addEventListener('submit', async (e) => {
       <p style="border-bottom: 1px dashed #000"><strong>Status:</strong> ${inserted.status}</p>
       <p><strong>Catatan:</strong> ${inserted.catatan || '-'}</p>
       <hr />
-      <p style="text-align:center;"><strong>Terima kasih atas kepercayaannya!</strong></p>
+      <p style="text-align:center;"><strong>${ucapanTerimaKasih}</strong></p>
     </div>
   `
   previewBox.innerHTML = notaHtml
