@@ -174,37 +174,56 @@
 
   <script>
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
-          .then(reg => {
-            reg.addEventListener('updatefound', () => {
-              const newSW = reg.installing;
-              newSW.addEventListener('statechange', () => {
-                if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
-                  showUpdateToast();
-                }
-              });
-            });
-          })
-          .catch(err => console.error('❌ Gagal daftar SW:', err));
-      });
-    }
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js?v=2.4.5')
+      .then(reg => {
+        console.log('✅ SW terdaftar!', reg);
 
-    function showUpdateToast() {
-      const toast = document.getElementById('update-toast');
-      toast.style.display = 'flex';
+        reg.onupdatefound = () => {
+          const newWorker = reg.installing;
+          newWorker.onstatechange = () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              const updateDismissed = localStorage.getItem('updateDismissed');
 
-      document.getElementById('reload-btn').onclick = () => {
-        if (navigator.serviceWorker.controller) {
-          navigator.serviceWorker.controller.postMessage({ action: 'skipWaiting' });
-          window.location.reload();
-        }
-      };
+              // ❗️Cek apakah user sudah pernah klik tombol
+              if (updateDismissed !== 'true') {
+                showUpdateToast(() => {
+                  newWorker.postMessage('SKIP_WAITING');
+                });
+              }
+            }
+          };
+        };
+      })
+      .catch(err => console.error('❌ SW gagal daftar:', err));
+  });
 
-      document.getElementById('dismiss-btn').onclick = () => {
-        toast.style.display = 'none';
-      };
-    }
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    console.log('⚡️ SW controller updated → reload!');
+    window.location.reload();
+  });
+}
+
+// Fungsi notif update
+function showUpdateToast(skipWaitingFn) {
+  const toast = document.getElementById('update-toast');
+  const reloadBtn = document.getElementById('reload-btn');
+  const dismissBtn = document.getElementById('dismiss-btn');
+
+  toast.style.display = 'flex'; // Munculkan toast
+
+  reloadBtn.onclick = () => {
+    localStorage.setItem('updateDismissed', 'true');
+    toast.innerHTML = '🔄 Memuat ulang...';
+    skipWaitingFn();
+  };
+
+  dismissBtn.onclick = () => {
+    toast.style.display = 'none';
+    localStorage.setItem('updateDismissed', 'true');
+  };
+}
+
 
     navigator.serviceWorker?.addEventListener('controllerchange', () => {
       console.log('🔄 Controller service worker diganti.');
@@ -225,15 +244,14 @@
     </div>
   </div>
 
-  <div id="update-toast" class="update-popup">
-  <div class="toast-content">
-    <p>🔔 Update tersedia! Aplikasi telah diperbarui.</p>
-    <div class="toast-buttons">
-      <button id="reload-btn">Reload ↻</button>
-      <button id="dismiss-btn">Nanti</button>
-    </div>
+  <div id="update-toast" style="display:none; position:fixed; bottom:20px; left:20px; right:20px; background:#222; color:#fff; padding:16px; border-radius:8px; z-index:9999; justify-content: space-between; align-items: center; gap: 10px;">
+  <span>🔔 Aplikasi diperbarui!</span>
+  <div>
+    <button id="reload-btn" style="margin-right: 10px;">Reload ↻</button>
+    <button id="dismiss-btn">Nanti</button>
   </div>
 </div>
+
 
 </body>
 </html>

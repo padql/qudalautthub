@@ -1,37 +1,16 @@
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js?v=2.4.2')
-        .then(reg => {
-          console.log('✅ Service Worker terdaftar!', reg);
+self.addEventListener('install', event => {
+  console.log('📦 SW installing...');
+  // Bisa cache asset di sini kalau mau
+});
 
-          reg.onupdatefound = () => {
-            const newSW = reg.installing;
-            newSW.onstatechange = () => {
-              if (newSW.state === 'installed') {
-                if (navigator.serviceWorker.controller) {
-                  showUpdateToast(() => {
-                    window.location.reload();
-                  });
-                } else {
-                  console.log('✅ Service Worker siap digunakan.');
-                }
-              }
-            };
-          };
-        })
-        .catch(err => console.error('❌ SW gagal daftar:', err));
-    });
+self.addEventListener('activate', event => {
+  console.log('⚙️ SW activated!');
+  event.waitUntil(self.clients.claim());
+});
+
+self.addEventListener('message', event => {
+  if (event.data === 'SKIP_WAITING') {
+    console.log('🚀 SKIP_WAITING diterima!');
+    self.skipWaiting();
   }
-
-  // ⬇⬇⬇ Tambahin fungsi ini DI BAWAHNYA
-  function showUpdateToast(onReload) {
-    const toast = document.getElementById('update-toast');
-    const btn = document.getElementById('reload-btn');
-
-    toast.style.display = 'block';
-
-    btn.addEventListener('click', () => {
-      toast.innerText = 'Memuat ulang...';
-      onReload(); // Panggil reload setelah klik
-    });
-  }
+});
