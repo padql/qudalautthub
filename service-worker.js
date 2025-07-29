@@ -1,6 +1,6 @@
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js?v=2.4')
+      navigator.serviceWorker.register('/service-worker.js?v=2.4.1')
         .then(reg => {
           console.log('✅ Service Worker terdaftar!', reg);
 
