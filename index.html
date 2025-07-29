@@ -109,29 +109,66 @@
       }
     }
 
-    #update-toast {
+    .update-popup {
       display: none;
       position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: rgba(0, 0, 0, 0.85);
-      color: #fff;
-      padding: 12px 16px;
-      border-radius: 10px;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
       z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toast-content {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 1.5rem 2rem;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      animation: popIn 0.4s ease;
+    }
+
+    .toast-buttons {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .toast-buttons button {
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
       font-size: 0.95rem;
-      backdrop-filter: blur(6px);
+      transition: 0.3s;
     }
 
     #reload-btn {
-      margin-left: 12px;
-      background: #fff;
-      color: #000;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
+      background: #0f766e;
+      color: white;
+    }
+    #reload-btn:hover {
+      background: #115e59;
+    }
+
+    #dismiss-btn {
+      background: #64748b;
+      color: white;
+    }
+    #dismiss-btn:hover {
+      background: #475569;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
     }
   </style>
 
@@ -154,27 +191,19 @@
     }
 
     function showUpdateToast() {
-      Swal.fire({
-        title: '🚨 Update Tersedia!',
-        text: 'Versi terbaru sudah siap dipakai.',
-        icon: 'info',
-        showCancelButton: true,
-        confirmButtonText: '🔄 Muat Ulang',
-        cancelButtonText: 'Nanti Saja',
-        reverseButtons: true,
-        backdrop: true,
-        background: '#1e293b',
-        color: '#f8fafc',
-        confirmButtonColor: '#0f766e',
-        cancelButtonColor: '#64748b',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          if (navigator.serviceWorker.controller) {
-            navigator.serviceWorker.controller.postMessage({ action: 'skipWaiting' });
-            window.location.reload();
-          }
+      const toast = document.getElementById('update-toast');
+      toast.style.display = 'flex';
+
+      document.getElementById('reload-btn').onclick = () => {
+        if (navigator.serviceWorker.controller) {
+          navigator.serviceWorker.controller.postMessage({ action: 'skipWaiting' });
+          window.location.reload();
         }
-      });
+      };
+
+      document.getElementById('dismiss-btn').onclick = () => {
+        toast.style.display = 'none';
+      };
     }
 
     navigator.serviceWorker?.addEventListener('controllerchange', () => {
@@ -196,9 +225,15 @@
     </div>
   </div>
 
-  <div id="update-toast">
-    Update tersedia! 
-    <button id="reload-btn">↺ Reload</button>
+  <div id="update-toast" class="update-popup">
+  <div class="toast-content">
+    <p>🔔 Update tersedia! Aplikasi telah diperbarui.</p>
+    <div class="toast-buttons">
+      <button id="reload-btn">Reload ↻</button>
+      <button id="dismiss-btn">Nanti</button>
+    </div>
   </div>
+</div>
+
 </body>
 </html>
