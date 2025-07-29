@@ -109,73 +109,66 @@
       }
     }
 
-    .update-popup {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(4px);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    /* Toast Styling */
+#update-toast {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30, 30, 30, 0.9);
+  color: #fff;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+  font-family: 'Segoe UI', sans-serif;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  animation: slideUp 0.3s ease-out;
+}
 
-    .toast-content {
-      background: #1e293b;
-      color: #f8fafc;
-      padding: 1.5rem 2rem;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      animation: popIn 0.4s ease;
-    }
+#update-toast .actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
 
-    .toast-buttons {
-      margin-top: 1rem;
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-    }
+#update-toast button {
+  background: #fff;
+  color: #111;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
 
-    .toast-buttons button {
-      padding: 0.6rem 1.2rem;
-      border-radius: 8px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      font-size: 0.95rem;
-      transition: 0.3s;
-    }
+#update-toast button:hover {
+  background: #eaeaea;
+}
 
-    #reload-btn {
-      background: #0f766e;
-      color: white;
-    }
-    #reload-btn:hover {
-      background: #115e59;
-    }
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 40px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
 
-    #dismiss-btn {
-      background: #64748b;
-      color: white;
-    }
-    #dismiss-btn:hover {
-      background: #475569;
-    }
-
-    @keyframes popIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
   </style>
 
   <script>
     if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js?v=2.4.5')
+    navigator.serviceWorker.register('/service-worker.js?v=2.3.0')
       .then(reg => {
         console.log('✅ SW terdaftar!', reg);
 
@@ -214,7 +207,7 @@ function showUpdateToast(skipWaitingFn) {
 
   reloadBtn.onclick = () => {
     localStorage.setItem('updateDismissed', 'true');
-    toast.innerHTML = '🔄 Memuat ulang...';
+    toast.innerHTML = '🔄Memuat ulang...';
     skipWaitingFn();
   };
 
@@ -244,14 +237,14 @@ function showUpdateToast(skipWaitingFn) {
     </div>
   </div>
 
-  <div id="update-toast" style="display:none; position:fixed; bottom:20px; left:20px; right:20px; background:#222; color:#fff; padding:16px; border-radius:8px; z-index:9999; justify-content: space-between; align-items: center; gap: 10px;">
-  <span>🔔 Aplikasi diperbarui!</span>
-  <div>
-    <button id="reload-btn" style="margin-right: 10px;">Reload ↻</button>
+  <!-- Tambahkan ini di HTML -->
+<div id="update-toast">
+  <span>🔔 Versi baru tersedia!</span>
+  <div class="actions">
+    <button id="reload-btn">Muat Ulang</button>
     <button id="dismiss-btn">Nanti</button>
   </div>
 </div>
-
 
 </body>
 </html>
