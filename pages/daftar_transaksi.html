@@ -5,16 +5,76 @@
   <title>Daftar Transaksi</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
+    :root {
+      --color-bg: #f0f4f8;
+      --color-text: #1e293b;
+      --color-form: #ffffff;
+      --color-accent: #0f766e;
+      --color-border: #cbd5e1;
+      --color-btn: #ffffff;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #f8f9fa;
-      padding: 30px 15px;
+      background: var(--color-bg);
+      color: var(--color-text);
       margin: 0;
+      padding: 30px 15px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark-mode {
+      --color-bg: #0f172a;
+      --color-text: #f1f5f9;
+      --color-form: #1e293b;
+      --color-accent: #2dd4bf;
+      --color-border: #334155;
+      --color-btn: #000000;
+    }
+
+    .nav-bar-custom {
+      position: sticky;
+      bottom: 0;
+      z-index: 999;
+      max-width: 450px;
+      margin: 0 auto 1.5rem;
+      background-color: rgba(167, 209, 205, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    body.dark-mode .nav-bar-custom {
+      background-color: rgba(30, 41, 59, 0.6);
+    }
+
+    .btn-nav, .toggle-mode {
+      background-color: var(--color-accent);
+      border: none;
+      color: var(--color-btn);
+      font-size: 14px;
+      font-weight: bold;
+      padding: 8px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+    }
+
+    .btn-nav:hover, .toggle-mode:hover {
+      background-color: #14b8a6;
     }
     .container {
       max-width: 1000px;
       margin: auto;
-      background: white;
+      background: var(--color-form);
       padding: 25px;
       border-radius: 12px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.08);
@@ -22,7 +82,7 @@
     }
     h2 {
       text-align: center;
-      color: #2c7a7b;
+      color: var(--color-accent);
       margin-bottom: 20px;
     }
     .alert {
@@ -63,25 +123,31 @@
       text-align: left;
     }
     th {
-      background-color: #2c7a7b;
-      color: white;
+      background-color: var(--color-accent);
+      color: var(--color-btn);
     }
     tr:nth-child(even) {
-      background-color: #f2f2f2;
+      background-color: var(--color-bg);
     }
     .btn {
-      display: inline-block;
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px;
+      font-weight: bold;
+      text-align: center;
+      background: var(--color-accent);
+      color: var(--color-btn);
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+      margin-top: 12px;
       text-decoration: none;
-      padding: 10px 16px;
-      margin-top: 20px;
-      margin-right: 10px;
-      border-radius: 8px;
-      background: #2c7a7b;
-      color: white;
-      transition: background 0.3s ease;
     }
     .btn:hover {
-      background: #225e5f;
+      background: var(--color-accent);
     }
     .hapus-btn {
       color: red;
@@ -117,7 +183,7 @@
         left: 10px;
         top: 12px;
         font-weight: bold;
-        color: #444;
+        color: var(--color-text);
         white-space: nowrap;
       }
     }
@@ -302,5 +368,34 @@
     loadData()
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <div class="d-flex justify-content-between align-items-center mb-4 nav-bar-custom">
+  <div>
+    <a href="javascript:history.back()" class="btn-nav">Back</a>
+    <a href="../index.html" class="btn-nav">Home</a>
+  </div>
+  <button class="toggle-mode">🌓</button>
+</div>
+<script>
+  function toggleMode() {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Setel mode dari localStorage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+
+    // Event handler tombol toggle
+    const toggleButton = document.querySelector('.toggle-mode');
+    if (toggleButton) {
+      toggleButton.addEventListener('click', toggleMode);
+    }
+  });
+</script>
+
 </body>
 </html>
