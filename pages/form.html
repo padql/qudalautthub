@@ -205,6 +205,8 @@
           <select class="form-select" name="jenis" required>
             <option>Private</option>
             <option>Sharing</option>
+            <option>Invite</option>
+            <option>Family Plan</option>
           </select>
         </div>
         <div class="col-12 col-md-6 mb-3">
@@ -264,43 +266,68 @@
   const downloadBtn = document.getElementById('btnDownload')
 
   form.addEventListener('submit', async (e) => {
-    function showNotif(message, type = 'success') {
-    const notif = document.getElementById('notif')
-    notif.textContent = message
+  e.preventDefault();
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
 
-    notif.style.backgroundColor = type === 'success' ? '#d4edda' : '#f8d7da'
-    notif.style.color = type === 'success' ? '#155724' : '#721c24'
-    notif.style.border = `1px solid ${type === 'success' ? '#c3e6cb' : '#f5c6cb'}`
-    notif.style.display = 'block'
-
-    // Reset animasi biar bisa dipanggil berulang
-    notif.style.animation = 'none'
-    void notif.offsetHeight // force reflow
-    notif.style.animation = 'slideInDown 0.5s ease forwards'
-
-    // Setelah 3 detik, keluar pakai fade
-    setTimeout(() => {
-      notif.style.animation = 'fadeOut 0.5s ease forwards'
-      setTimeout(() => {
-        notif.style.display = 'none'
-      }, 500)
-    }, 3000)
-  }
-
-  e.preventDefault()
-  const formData = new FormData(form)
-  const data = Object.fromEntries(formData.entries())
-
-  const { data: inserted, error } = await supabase.from('transaksi').insert([data]).select().single()
+  const { data: inserted, error } = await supabase.from('transaksi').insert([data]).select().single();
 
   if (error) {
-  showNotif('❌ Gagal menyimpan transaksi: ' + error.message, 'error')
-  return
+    showNotif('❌ Gagal menyimpan transaksi: ' + error.message, 'error');
+    return;
   }
 
-  showNotif('✅ Transaksi berhasil disimpan!', 'success')
+  showNotif('✅ Transaksi berhasil disimpan!', 'success');
 
-  form.reset()
+  // ⬇ Tampilkan preview nota kalau ada fungsinya
+  if (typeof showNotaPreview === 'function') {
+    showNotaPreview(inserted); // atau apapun fungsi preview lo
+  }
+
+  form.reset();
+
+function showNotif(message, type = 'success') {
+  const notif = document.getElementById('notif');
+  const audioSuccess = document.getElementById('notif-success');
+  const audioError = document.getElementById('notif-error');
+  notif.textContent = message;
+
+  const isDark = document.body.classList.contains('dark-mode');
+
+  if (type === 'success') {
+    notif.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--color-accent');
+    notif.style.color = getComputedStyle(document.documentElement).getPropertyValue('--color-btn');
+    notif.style.border = `getComputedStyle(document.documentElement).getPropertyValue('--color-border')`;
+    audioSuccess.currentTime = 0;
+    audioSuccess.play();
+    if (navigator.vibrate) {
+      navigator.vibrate(100);
+    }
+  } else {
+    notif.style.backgroundColor = isDark ? '#5c2b2b' : '#f8d7da';
+    notif.style.color = isDark ? '#f8d7da' : '#721c24';
+    notif.style.border = `1px solid ${isDark ? '#a24b4b' : '#f5c6cb'}`;
+    audioError.currentTime = 0;
+    audioError.play();
+
+  if (navigator.vibrate) {
+    navigator.vibrate([100, 100, 100]); // getar 100ms, jeda 100ms, getar lagi 100ms
+  }
+}
+
+  notif.style.display = 'block';
+
+  notif.style.animation = 'none';
+  void notif.offsetHeight;
+  notif.style.animation = 'slideInDown 0.5s ease forwards';
+
+  setTimeout(() => {
+    notif.style.animation = 'fadeOut 0.5s ease forwards';
+    setTimeout(() => {
+      notif.style.display = 'none';
+    }, 500);
+  }, 3000);
+}
 
   // ✅ Tampilkan nota
   const ucapanTerimaKasih = getUcapanRandom()
@@ -389,5 +416,6 @@
     }
   });
 </script>
+<audio id="notif-success" src="../sounds/success.mp3" preload="auto"></audio>
 </body>
 </html>
