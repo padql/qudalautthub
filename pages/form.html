@@ -290,6 +290,10 @@ function showNotif(message, type = 'success') {
   const notif = document.getElementById('notif');
   const audioSuccess = document.getElementById('notif-success');
   const audioError = document.getElementById('notif-error');
+
+  audioSuccess.volume = 5;
+
+
   notif.textContent = message;
 
   const isDark = document.body.classList.contains('dark-mode');
