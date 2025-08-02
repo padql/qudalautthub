@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -5,101 +6,141 @@
   <title>Form Transaksi</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
+    :root {
+      --color-bg: #f0f4f8;
+      --color-text: #1e293b;
+      --color-form: #ffffff;
+      --color-accent: #0f766e;
+      --color-border: #cbd5e1;
+      --color-btn: #ffffff;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #f0f4f8;
-      padding: 30px 15px;
+      background: var(--color-bg);
+      color: var(--color-text);
       margin: 0;
+      padding: 30px 15px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark-mode {
+      --color-bg: #0f172a;
+      --color-text: #f1f5f9;
+      --color-form: #1e293b;
+      --color-accent: #2dd4bf;
+      --color-border: #334155;
+      --color-btn: #000000;
+    }
+
+    .nav-bar-custom {
+      position: sticky;
+      bottom: 0;
+      z-index: 999;
+      max-width: 450px;
+      margin: 0 auto 1.5rem;
+      background-color: rgba(167, 209, 205, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    body.dark-mode .nav-bar-custom {
+      background-color: rgba(30, 41, 59, 0.6);
+    }
+
+    .btn-nav, .toggle-mode {
+      background-color: var(--color-accent);
+      border: none;
+      color: var(--color-btn);
+      font-size: 14px;
+      font-weight: bold;
+      padding: 8px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+    }
+
+    .btn-nav:hover, .toggle-mode:hover {
+      background-color: #14b8a6;
     }
 
     .form-container {
-      max-width: 380px;
+      max-width: 420px;
       margin: auto;
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      background: var(--color-form);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
 
     h2 {
       text-align: center;
-      color: #2c7a7b;
+      color: var(--color-accent);
       margin-bottom: 20px;
     }
 
     form input,
     form select,
-    form textarea,
-    form button {
-      display: block;
+    form textarea {
       width: 100%;
       margin-bottom: 15px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+      height: 45px;
+      padding: 10px 14px;
+      box-sizing: border-box;
+      border: none;
+      border-radius: 12px;
+      background: var(--color-bg);
+      color: var(--color-text);
       font-size: 16px;
+      outline: none;
     }
 
-    form button {
-      background-color: #2c7a7b;
-      text-decoration: none;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s ease;
+    form input::placeholder,
+    form textarea::placeholder {
+      color: #94a3b8;
     }
 
-    form button:hover {
-      background-color: #225e5f;
-    }
-
-    .btn-container {
-      margin-top: 10px;
-      text-align: center;
-    }
-
+    form button,
     .btn {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px;
+      font-weight: bold;
+      text-align: center;
+      background: var(--color-accent);
+      color: var(--color-btn);
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+      margin-top: 12px;
       text-decoration: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      background: #2c7a7b;
-      color: white;
-      transition: background 0.3s ease;
     }
 
     .btn:hover {
-      background: #225e5f;
+      background: #0d9488;
     }
 
     #notaBox {
-      position: relative;
-      background: white;
+      background: var(--color-form);
       max-width: 320px;
       padding: 20px;
-      border: 1px dashed #444;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      margin: auto;
+      border-radius: 12px;
+      margin: 30px auto 10px;
+      border: 1px dashed var(--color-border);
       font-family: 'Courier New', monospace;
-      overflow: hidden;
-    }
-
-    #notaBox::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-image: url('image/ql.jpg');
-      background-size: cover;
-      background-position: center;
-      opacity: 1;
-      z-index: 0;
-    }
-
-    #notaBox * {
-      position: relative;
-      z-index: 1;
+      color: var(--color-text);
     }
 
     .toast {
@@ -111,11 +152,10 @@
       padding: 12px 18px;
       border-radius: 8px;
       font-weight: 500;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      background-color: #22c55e;
+      color: white;
       display: none;
-      opacity: 0;
-      animation-duration: 0.5s;
-      animation-fill-mode: forwards;
+      animation: slideInDown 0.5s ease forwards;
     }
 
     @keyframes slideInDown {
@@ -130,14 +170,13 @@
     }
 
     @keyframes fadeOut {
-      to {
-        opacity: 0;
-      }
+      to { opacity: 0; }
     }
 
   </style>
 </head>
 <body>
+
   <div class="form-container">
     <div id="notif" class="toast"></div>
     <h2>Form Transaksi</h2>
@@ -167,6 +206,8 @@
           <select class="form-select" name="jenis" required>
             <option>Private</option>
             <option>Sharing</option>
+            <option>Invite</option>
+            <option>Family Plan</option>
           </select>
         </div>
         <div class="col-12 col-md-6 mb-3">
@@ -197,7 +238,7 @@
         <div class="row g-2">
         <div class="col-12 col-md-4 d-grid">
           <button type="submit">Simpan Transaksi</button>
-          <button type="button"><a href="daftar_transaksi.html" class="btn">Daftar Transaksi</a></button>
+          <a href="daftar_transaksi.html" class="btn">Daftar Transaksi</a>
           <div id="previewNota" style="display:none; margin-top:30px;"></div>
           <button id="btnDownload" style="display:none" class="btn">⬇️ Download Nota (JPG)</button>
         </div>
@@ -226,43 +267,72 @@
   const downloadBtn = document.getElementById('btnDownload')
 
   form.addEventListener('submit', async (e) => {
-    function showNotif(message, type = 'success') {
-    const notif = document.getElementById('notif')
-    notif.textContent = message
+  e.preventDefault();
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
 
-    notif.style.backgroundColor = type === 'success' ? '#d4edda' : '#f8d7da'
-    notif.style.color = type === 'success' ? '#155724' : '#721c24'
-    notif.style.border = `1px solid ${type === 'success' ? '#c3e6cb' : '#f5c6cb'}`
-    notif.style.display = 'block'
-
-    // Reset animasi biar bisa dipanggil berulang
-    notif.style.animation = 'none'
-    void notif.offsetHeight // force reflow
-    notif.style.animation = 'slideInDown 0.5s ease forwards'
-
-    // Setelah 3 detik, keluar pakai fade
-    setTimeout(() => {
-      notif.style.animation = 'fadeOut 0.5s ease forwards'
-      setTimeout(() => {
-        notif.style.display = 'none'
-      }, 500)
-    }, 3000)
-  }
-
-  e.preventDefault()
-  const formData = new FormData(form)
-  const data = Object.fromEntries(formData.entries())
-
-  const { data: inserted, error } = await supabase.from('transaksi').insert([data]).select().single()
+  const { data: inserted, error } = await supabase.from('transaksi').insert([data]).select().single();
 
   if (error) {
-  showNotif('❌ Gagal menyimpan transaksi: ' + error.message, 'error')
-  return
+    showNotif('❌ Gagal menyimpan transaksi: ' + error.message, 'error');
+    return;
   }
 
-  showNotif('✅ Transaksi berhasil disimpan!', 'success')
+  showNotif('✅ Transaksi berhasil disimpan!', 'success');
 
-  form.reset()
+  // ⬇ Tampilkan preview nota kalau ada fungsinya
+  if (typeof showNotaPreview === 'function') {
+    showNotaPreview(inserted); // atau apapun fungsi preview lo
+  }
+
+  form.reset();
+
+function showNotif(message, type = 'success') {
+  const notif = document.getElementById('notif');
+  const audioSuccess = document.getElementById('notif-success');
+  const audioError = document.getElementById('notif-error');
+
+  audioSuccess.volume = 1.0;
+
+
+  notif.textContent = message;
+
+  const isDark = document.body.classList.contains('dark-mode');
+
+  if (type === 'success') {
+    notif.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--color-accent');
+    notif.style.color = getComputedStyle(document.documentElement).getPropertyValue('--color-btn');
+    notif.style.border = `getComputedStyle(document.documentElement).getPropertyValue('--color-border')`;
+    audioSuccess.currentTime = 0;
+    audioSuccess.play();
+    if (navigator.vibrate) {
+      navigator.vibrate(100);
+    }
+  } else {
+    notif.style.backgroundColor = isDark ? '#5c2b2b' : '#f8d7da';
+    notif.style.color = isDark ? '#f8d7da' : '#721c24';
+    notif.style.border = `1px solid ${isDark ? '#a24b4b' : '#f5c6cb'}`;
+    audioError.currentTime = 0;
+    audioError.play();
+
+  if (navigator.vibrate) {
+    navigator.vibrate([100, 100, 100]); // getar 100ms, jeda 100ms, getar lagi 100ms
+  }
+}
+
+  notif.style.display = 'block';
+
+  notif.style.animation = 'none';
+  void notif.offsetHeight;
+  notif.style.animation = 'slideInDown 0.5s ease forwards';
+
+  setTimeout(() => {
+    notif.style.animation = 'fadeOut 0.5s ease forwards';
+    setTimeout(() => {
+      notif.style.display = 'none';
+    }, 500);
+  }, 3000);
+}
 
   // ✅ Tampilkan nota
   const ucapanTerimaKasih = getUcapanRandom()
@@ -271,7 +341,7 @@
     <div id="notaBox" style="
       position: relative;
       font-family:'Courier New', monospace;
-      background:white;
+      background:var(--color-form);
       max-width:320px;
       border:1px dashed #444;
       padding:20px;
@@ -323,5 +393,34 @@
 <div id="update-toast" style="display: none; position: fixed; bottom: 20px; left: 20px; background: #000; color: #fff; padding: 12px 16px; border-radius: 8px; z-index: 9999;">
   Update tersedia! <button id="reload-btn" style="margin-left: 10px; background: #fff; color: #000; border: none; padding: 4px 8px; cursor: pointer;">↺Reload</button>
 </div>
+<div class="d-flex justify-content-between align-items-center mb-4 nav-bar-custom">
+  <div>
+    <a href="javascript:history.back()" class="btn-nav">Back</a>
+    <a href="../index.html" class="btn-nav">Home</a>
+  </div>
+  <button class="toggle-mode">🌓</button>
+  </div>
+<script>
+  function toggleMode() {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Setel mode dari localStorage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+
+    // Event handler tombol toggle
+    const toggleButton = document.querySelector('.toggle-mode');
+    if (toggleButton) {
+      toggleButton.addEventListener('click', toggleMode);
+    }
+  });
+</script>
+<audio id="notif-success" src="../sounds/success.mp3" preload="auto"></audio>
 </body>
 </html>
