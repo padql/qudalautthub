@@ -173,6 +173,66 @@
       to { opacity: 0; }
     }
 
+    /* #toggleSidebar {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 1001;
+      padding: 10px 20px;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    } */
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 200px;
+      height: 100%;
+      background: white;
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+      z-index: 1002;
+      padding: 20px;
+      transition: transform 0.3s ease;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .sidebar-content button {
+      margin-bottom: 10px;
+      width: 100%;
+      padding: 10px;
+      background: #eee;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #closeSidebar {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+    }
   </style>
 </head>
 <body>
@@ -395,6 +455,7 @@ function showNotif(message, type = 'success') {
 </div>
 <div class="d-flex justify-content-between align-items-center mb-4 nav-bar-custom">
   <div>
+    <button id="toggleSidebar" class="btn-nav">☰</button>
     <a href="javascript:history.back()" class="btn-nav">Back</a>
     <a href="../index.html" class="btn-nav">Home</a>
   </div>
@@ -422,5 +483,21 @@ function showNotif(message, type = 'success') {
   });
 </script>
 <audio id="notif-success" src="../sounds/success.mp3" preload="auto"></audio>
+
+<!-- Sidebar -->
+<div id="sidebar" class="sidebar hidden">
+    <div class="sidebar-content">
+      <button id="closeSidebar">×</button>
+      <h2>Pengaturan</h2>
+      <ul>
+        <li><button onclick="alert('Buka settings')">⚙️ Settings</button></li>
+        <li><button onclick="location.reload()">🔄 Update App</button></li>
+        <li><button onclick="clearCache()">🗑️ Hapus Cache</button></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay hidden"></div>
+<script type="module" src="../sidebar.js"></script>
 </body>
 </html>
