@@ -19,6 +19,10 @@ const toggleBtn = document.getElementById('toggleSidebar');
       }).then(() => alert('Cache dihapus'));
     }
 
+    function admin() {
+      window.location.href = '../admin/admin.html';
+    }
+
     toggleBtn.addEventListener('click', openSidebar);
     closeBtn.addEventListener('click', closeSidebar);
     overlay.addEventListener('click', closeSidebar);

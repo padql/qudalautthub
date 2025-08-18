@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Input Promo - QHub</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      font-family: Poppins, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    h1 {
+      color: #1e877c;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    label {
+      font-weight: 500;
+    }
+
+    select, input, button {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: #1e877c;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background: #16665f;
+    }
+
+    /* Responsif */
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      form { padding: 15px; }
+      h1 { font-size: 1.5rem; }
+      select, input, button { font-size: 0.95rem; padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Tambah Promo Produk</h1>
+  <form id="promoForm">
+    <div>
+      <label for="produk_id">Produk</label>
+      <select id="produk_id" required></select>
+    </div>
+
+    <div>
+      <label for="harga_modal_promo">Harga Modal Promo</label>
+      <input type="number" id="harga_modal_promo" required placeholder="Masukkan harga promo">
+    </div>
+
+    <div>
+      <label for="tanggal_mulai">Tanggal Mulai</label>
+      <input type="date" id="tanggal_mulai">
+    </div>
+
+    <div>
+      <label for="tanggal_berakhir">Tanggal Berakhir (opsional)</label>
+      <input type="date" id="tanggal_berakhir">
+    </div>
+
+    <div>
+      <label>
+        <input type="checkbox" id="aktif" checked>
+        Promo Aktif
+      </label>
+    </div>
+
+    <button type="submit">Simpan Promo</button>
+  </form>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+    const SUPABASE_URL = 'https://uagbiwhyapkrxkyyjeza.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhZ2Jpd2h5YXBrcnhreXlqZXphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDUyNjcsImV4cCI6MjA2OTAyMTI2N30.k6dR0RL0yfElQC5wWKC2ab5npBSiLwaCecxq6j2fdWE';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    const produkSelect = document.getElementById('produk_id');
+    const form = document.getElementById('promoForm');
+
+    // 🔹 Ambil daftar produk buat dropdown
+    async function loadProduk() {
+      let { data, error } = await supabase.from('products').select('id, nama_produk, kategori, durasi');
+      if (error) { console.error(error); return; }
+      produkSelect.innerHTML = data.map(p => 
+        `<option value="${p.id}">${p.nama_produk} - ${p.kategori} - ${p.durasi}</option>`
+      ).join('');
+    }
+    loadProduk();
+
+    // 🔹 Submit promo
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const { error } = await supabase.from('promo').insert([{
+        produk_id: produkSelect.value,
+        harga_modal_promo: document.getElementById('harga_modal_promo').value,
+        tanggal_mulai: document.getElementById('tanggal_mulai').value || null,
+        tanggal_berakhir: document.getElementById('tanggal_berakhir').value || null,
+        aktif: document.getElementById('aktif').checked
+      }]);
+
+      if (error) {
+        alert("❌ Gagal simpan promo: " + error.message);
+      } else {
+        alert("✅ Promo berhasil disimpan!");
+        form.reset();
+        loadProduk();
+      }
+    });
+  </script>
+</body>
+</html>
