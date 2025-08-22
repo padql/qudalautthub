@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    :root {
+      --color-bg: #f0f4f8;
+      --color-text: #1e293b;
+      --color-form: #ffffff;
+      --color-accent: #0f766e;
+      --color-border: #cbd5e1;
+      --color-btn: #ffffff;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      margin: 0;
+      padding: 30px 15px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark-mode {
+      --color-bg: #0f172a;
+      --color-text: #f1f5f9;
+      --color-form: #1e293b;
+      --color-accent: #2dd4bf;
+      --color-border: #334155;
+      --color-btn: #000000;
+    }
+
+    .nav-bar-custom {
+      position: sticky;
+      bottom: 0;
+      z-index: 999;
+      max-width: 450px;
+      margin: 0 auto 1.5rem;
+      background-color: rgba(167, 209, 205, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    body.dark-mode .nav-bar-custom {
+      background-color: rgba(30, 41, 59, 0.6);
+    }
+
+    .btn-nav, .toggle-mode {
+      background-color: var(--color-accent);
+      border: none;
+      color: var(--color-btn);
+      font-size: 14px;
+      font-weight: bold;
+      padding: 8px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+    }
+
+    .btn-nav:hover, .toggle-mode:hover {
+      background-color: #14b8a6;
+    }
+    
+    .table-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    table {
+      width: 100%;
+      max-width: 470px;
+      border-collapse: collapse;
+      font-family: system-ui, sans-serif;
+      background: var(--color-form);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    @media (max-width: 600px) {
+      table {
+        min-width: 270px; /* biar lebih responsif di layar kecil */
+        padding: 20px;
+      }
+    }
+
+    thead {
+      background: var(--color-accent);
+      color: var(--color-btn);
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    tbody tr:nth-child(even) {
+      background: var(--color-bg);
+    }
+
+    tbody tr:hover {
+      background: var(--color-accent);
+    }
+
+    .pagination {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .pagination button {
+      padding: 6px 12px;
+      border: 1px solid var(--color-border);
+      color: var(--color-text);
+      background: var(--color-btn);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .pagination button.active {
+      background: var(--color-accent);
+      color: var(--color-btn);
+      border-color: #279f93;
+    }
+
+    .pagination button:hover {
+      background: var(--color-accent);
+      color: var(--color-btn);
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 200px;
+      height: 100%;
+      background: var(--color-form);
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+      z-index: 1002;
+      padding: 20px;
+      transition: transform 0.3s ease;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .sidebar-content button {
+      margin-bottom: 10px;
+      width: 100%;
+      padding: 10px;
+      background: var(--color-accent);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #closeSidebar {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--color-bg);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+</style>
+<body>
+    <!-- 🔹 Daftar promo aktif -->
+    <div id="promo-container" style="margin:20px;">
+      <div class="table-wrapper">
+      <h2 style="font-family:sans-serif; margin-bottom:10px; text-align: center;">Daftar Promo</h2>
+        <table id="promoTable" class="styled-table">
+        <thead>
+            <tr>
+            <th>Nama Produk</th>
+            <th>Kategori</th>
+            <th>Durasi</th>
+            <th>Harga Promo</th>
+            </tr>
+        </thead>
+        <tbody id="promo-list">
+            <tr><td colspan="4">Loading...</td></tr>
+        </tbody>
+        </table>
+        <div class="pagination" id="pagination"></div>
+    </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-4 nav-bar-custom">
+    <div>
+      <button id="toggleSidebar" class="btn-nav">☰</button>
+      <a href="javascript:history.back()" class="btn-nav">Back</a>
+      <a href="../index.html" class="btn-nav">Home</a>
+    </div>
+      <button class="toggle-mode">🌓</button>
+    </div>
+
+    <div id="sidebar" class="sidebar hidden">
+      <div class="sidebar-content">
+        <button id="closeSidebar">×</button>
+        <h2>Pengaturan</h2>
+        <ul>
+          <li><button onclick="alert('Buka settings')">⚙️ Settings</button></li>
+          <li><button onclick="window.location.href='promo.html'">💯 Promo</button></li>
+          <li><button onclick="location.reload()">🔄 Update App</button></li>
+          <li><button onclick="clearCache()">🗑️ Hapus Cache</button></li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="overlay" class="overlay hidden"></div>
+  <script type="module" src="../sidebar.js"></script>
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+        const SUPABASE_URL = 'https://uagbiwhyapkrxkyyjeza.supabase.co';
+        const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhZ2Jpd2h5YXBrcnhreXlqZXphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NDUyNjcsImV4cCI6MjA2OTAyMTI2N30.k6dR0RL0yfElQC5wWKC2ab5npBSiLwaCecxq6j2fdWE';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+        const produkSelect = document.getElementById('produk_id');
+        const promoList = document.getElementById('promo-list');
+
+        const promoTableBody = document.querySelector("#promoTable tbody");
+        const pagination = document.getElementById("pagination");
+
+        let promos = []; // data promo hasil query supabase
+        let currentPage = 1;
+        const rowsPerPage = 5;
+
+        // render table
+        function renderTable(page = 1) {
+        currentPage = page;
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const sliced = promos.slice(start, end);
+
+        promoTableBody.innerHTML = sliced.map(p => {
+            const hargaFinal = (p.harga_modal_promo || 0) + (p.products?.keuntungan || 0);
+            return `
+            <tr>
+                <td>${p.products?.nama_produk || "-"}</td>
+                <td>${p.products?.kategori || "-"}</td>
+                <td>${p.products?.durasi || "-"}</td>
+                <td>Rp ${hargaFinal.toLocaleString("id-ID")}</td>
+            </tr>
+            `;
+        }).join("");
+
+        renderPagination();
+        }
+
+        // render pagination buttons
+        function renderPagination() {
+        const pageCount = Math.ceil(promos.length / rowsPerPage);
+        pagination.innerHTML = "";
+        for (let i = 1; i <= pageCount; i++) {
+            const btn = document.createElement("button");
+            btn.textContent = i;
+            if (i === currentPage) btn.classList.add("active");
+            btn.onclick = () => renderTable(i);
+            pagination.appendChild(btn);
+        }
+        }
+
+        // contoh ambil data dari Supabase (ganti sesuai querymu)
+        async function loadPromoAktif() {
+        const { data, error } = await supabase
+            .from("promo")
+            .select(`
+            id,
+            harga_modal_promo,
+            aktif,
+            products (
+                nama_produk,
+                kategori,
+                durasi,
+                keuntungan
+            )
+            `)
+            .eq("aktif", true);
+
+        if (error) {
+            console.error(error);
+            return;
+        }
+        promos = data || [];
+        renderTable();
+        }
+
+        // jalanin load
+        loadPromoAktif();
+
+        function toggleMode() {
+          document.body.classList.toggle('dark-mode');
+          const isDark = document.body.classList.contains('dark-mode');
+          localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+          // Setel mode dari localStorage
+          const savedTheme = localStorage.getItem('theme');
+          if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+          }
+
+          // Event handler tombol toggle
+          const toggleButton = document.querySelector('.toggle-mode');
+          if (toggleButton) {
+            toggleButton.addEventListener('click', toggleMode);
+          }
+        });
+    </script>
+</body>
+</html>
